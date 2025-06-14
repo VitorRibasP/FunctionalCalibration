@@ -12,6 +12,8 @@ Description: Implements methods for calibrating an aggregated functional data mo
     wavelets or splines. The package is based on the paper <https://doi.org/10.1515/mcma-2023-2016> 
     and the Master's thesis <https://doi.org/10.47749/T/UNICAMP.2009.471073>.
 URL: https://github.com/VitorRibasP/FunctionalCalibration
+Imports:
+    wavethresh
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
