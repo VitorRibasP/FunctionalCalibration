@@ -87,9 +87,9 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
 #' @references dos Santos Sousa, A. R. (2024). A wavelet-based method in aggregated functional data analysis. Monte Carlo Methods and Applications, 30(1), 19-30.
 #'
 #' @examples
-#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights)
-#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
-#'                                 tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)
+#' \donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights)}
+#' \donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
+#'                                 tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)}
 #' functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
 #'                                 method = "universal")
 #'
