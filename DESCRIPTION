@@ -3,8 +3,8 @@ Type: Package
 Title: Aggregated Functional Data Calibration using Splines and Wavelets
 Version: 1.0.0
 Authors@R: c(
-    person("Vitor", "Perrone", email = "vitor.perrone10@gmail.com", role = c("aut", "cre"), comment = c(ORCID = 0009-0009-6923-7712)),
-    person("Alex", "Sousa", email = "asousa@unicamp.br", role = c("aut"), comment = c(ORCID = 0000-0001-5887-3638))
+    person("Vitor", "Perrone", email = "vitor.perrone10@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0009-0009-6923-7712")),
+    person("Alex", "Sousa", email = "asousa@unicamp.br", role = c("aut"), comment = c(ORCID = "0000-0001-5887-3638"))
   )
 Description: Implements methods for calibrating an aggregated functional data model using 
     wavelets or splines. Each aggregated curve is modeled as a linear combination of 
@@ -14,7 +14,6 @@ Description: Implements methods for calibrating an aggregated functional data mo
 URL: https://github.com/VitorRibasP/FunctionalCalibration
 Imports:
     wavethresh
-    splines
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
