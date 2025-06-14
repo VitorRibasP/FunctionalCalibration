@@ -17,14 +17,17 @@
 #'
 #' @examples
 #' plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3))
-#' plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3), "Aggregated Curve Example", simulated_data$x)
+#' plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3),
+#'                       "Aggregated Curve Example", simulated_data$x)
+#'
+#' @importFrom grDevices recordPlot
 #'
 #' @export
 plot_aggregated_curve <- function(alpha, weights, title = NULL, x = NULL) {
   if (is.null(x)) {
     x <- 1:nrow(alpha)
   }
-  if (class(alpha) == "data.frame") {
+  if (inherits(alpha, "data.frame")) {
     alpha <- as.matrix(alpha)
   }
   plot(x, alpha%*%weights, type = "l", xlab = "x", ylab = "y", main = title, lwd = 2)

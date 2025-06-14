@@ -62,8 +62,10 @@ In matrix notation, the model is represented as:
 }
 \examples{
 functional_calibration_wavelets(simulated_data$data, simulated_data$weights)
-functional_calibration_wavelets(simulated_data$data, simulated_data$weights, tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)
-functional_calibration_wavelets(simulated_data$data, simulated_data$weights, method = "universal")
+functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
+                                tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)
+functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
+                                method = "universal")
 
 }
 \references{

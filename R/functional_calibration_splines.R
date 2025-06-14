@@ -32,6 +32,7 @@
 #' functional_calibration_splines(simulated_data$data, simulated_data$weights, simulated_data$x, 12)
 #'
 #' @importFrom splines bs
+#' @importFrom grDevices recordPlot
 #'
 #' @export
 functional_calibration_splines <- function(data, weights, x,
@@ -41,11 +42,11 @@ functional_calibration_splines <- function(data, weights, x,
     stop("Error: data dimension is not compatible with weights dimension.")
   }
 
-  if (class(data) == "data.frame") {
+  if (inherits(data, "data.frame")) {
     data <- as.matrix(data)
   }
 
-  if (class(weights) == "data.frame") {
+  if (inherits(weights, "data.frame")) {
     weights <- as.matrix(weights)
   }
 

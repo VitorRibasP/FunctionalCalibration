@@ -26,6 +26,7 @@ The aggregated curve is computed as:
 }
 \examples{
 plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3))
-plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3), "Aggregated Curve Example", simulated_data$x)
+plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3),
+                      "Aggregated Curve Example", simulated_data$x)
 
 }

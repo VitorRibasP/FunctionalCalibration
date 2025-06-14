@@ -19,8 +19,4 @@ Computes the function:
 
 \deqn{g(\theta; \tau) = \displaystyle \frac{\exp\left(-\frac{\theta}{\tau}\right)}{\tau \left(1 + \exp\left(-\frac{\theta}{\tau}\right)\right)^2}}
 }
-\examples{
-Logistic_Density(0.3, 0.5)
-
-}
 \keyword{internal}

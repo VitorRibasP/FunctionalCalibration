@@ -10,9 +10,6 @@
 #'
 #' @return A numeric value representing the result of the function \eqn{g(\theta; \tau)} for the specified inputs.
 #'
-#' @examples
-#' Logistic_Density(0.3, 0.5)
-#'
 #'@keywords internal
 Logistic_Density <- function(theta, tau) {
   return(exp(-theta/tau)/(tau*(1 + exp(-theta/tau))^2))
@@ -36,10 +33,9 @@ Logistic_Density <- function(theta, tau) {
 #'
 #' @return A numeric value representing the result of the Bayesian shrinkage applied to the empirical coefficient \eqn{d}.
 #'
-#' @examples
-#' Bayesian_Shrinkage(0.3, 5, 0.95, 0.1, FALSE)
+#' @importFrom stats rnorm dnorm integrate
 #'
-#'@keywords internal
+#' @keywords internal
 Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
   if (!MC) {
     N <- rnorm(500)
@@ -92,10 +88,14 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
 #'
 #' @examples
 #' functional_calibration_wavelets(simulated_data$data, simulated_data$weights)
-#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights, tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)
-#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights, method = "universal")
+#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
+#'                                 tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)
+#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
+#'                                 method = "universal")
 #'
 #' @importFrom wavethresh wd threshold wr
+#' @importFrom stats median
+#' @importFrom grDevices recordPlot
 #'
 #' @export
 functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhase",
@@ -122,11 +122,11 @@ functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhas
     e <- 0
   }
 
-  if (class(data) == "data.frame") {
+  if (inherits(data, "data.frame")) {
     data <- as.matrix(data)
   }
 
-  if (class(weights) == "data.frame") {
+  if (inherits(weights, "data.frame")) {
     weights <- as.matrix(weights)
   }
 

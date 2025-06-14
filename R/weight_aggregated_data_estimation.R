@@ -19,9 +19,11 @@
 #' @examples
 #' weight_estimation(simulated_data$data[,1], simulated_data$alphas)
 #'
+#' @importFrom stats coef lm
+#'
 #' @export
 weight_estimation <- function(data, alpha) {
-  if (class(alpha) == "data.frame") {
+  if (inherits(alpha, "data.frame")) {
     alphas <- as.matrix(alpha)
   }
   coefs <- coef(lm(data ~ . - 1, cbind(data, alpha)))

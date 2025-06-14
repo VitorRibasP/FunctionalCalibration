@@ -29,8 +29,4 @@ The shrinkage function is defined as:
 where \eqn{\phi(x)} is the probability density function of the standard normal distribution,
 and \eqn{g(\theta; \tau)} is the logistic density function.
 }
-\examples{
-Bayesian_Shrinkage(0.3, 5, 0.95, 0.1, FALSE)
-
-}
 \keyword{internal}
