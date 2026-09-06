@@ -12,9 +12,10 @@ functional_calibration_wavelets(
   tau = 1,
   p = NULL,
   sigma = NULL,
-  MC = FALSE,
+  MC = TRUE,
   type = "soft",
   singular = FALSE,
+  corre = FALSE,
   x = NULL
 )
 }
@@ -39,6 +40,8 @@ functional_calibration_wavelets(
 
 \item{singular}{A logical evaluating to \code{TRUE} or \code{FALSE} indicating if it adds a small constant (1e-10) to the diagonal of \eqn{yy^T} to stabilize the matrix inversion.}
 
+\item{corre}{A logical evaluating to \code{TRUE} or \code{FALSE} indicating if the errors of the data are correlated. Only available for "bayesian" and "universal" methods.}
+
 \item{x}{A numeric vector of values at which the function is evaluated. If \code{NULL}, the default is the sequence \code{1:nrow(data)}.}
 }
 \value{
@@ -61,13 +64,16 @@ In matrix notation, the model is represented as:
 \deqn{A = \alpha y + e}
 }
 \examples{
-\donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights)}
-\donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
-                                tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)}
-functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
-                                method = "universal")
+\donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights)}
+\donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights,
+                                tau = 5, p = 0.95, sigma = 0.1, x = simulated_data_wav$x)}
+\donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights,
+                                method = "universal")}
+\donttest{functional_calibration_wavelets(simulated_data_cor$data, simulated_data_cor$weights, corre = TRUE)}
 
 }
 \references{
 dos Santos Sousa, A. R. (2024). A wavelet-based method in aggregated functional data analysis. Monte Carlo Methods and Applications, 30(1), 19-30.
+
+JOHNSTONE, I. M.; SILVERMAN, B. W. Wavelet Threshold Estimators for Data with Correlated Noise. Journal of the Royal Statistical Society: Series B (Statistical Methodology), v. 59, n. 2, p. 319–351, 1997.
 }

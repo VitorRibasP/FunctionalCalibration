@@ -35,8 +35,10 @@ In matrix notation, the model is represented as:
 \deqn{A = \alpha y + e}
 }
 \examples{
-functional_calibration_splines(simulated_data$data, simulated_data$weights, simulated_data$x)
-functional_calibration_splines(simulated_data$data, simulated_data$weights, simulated_data$x, 12)
+functional_calibration_splines(simulated_data_spl$data,
+simulated_data_spl$weights, simulated_data_spl$x)
+functional_calibration_splines(simulated_data_spl$data,
+simulated_data_spl$weights, simulated_data_spl$x, 12)
 
 }
 \references{

@@ -4,7 +4,7 @@
 \alias{Bayesian_Shrinkage}
 \title{Bayesian Shrinkage}
 \usage{
-Bayesian_Shrinkage(d, tau, p, sigma, MC = FALSE)
+Bayesian_Shrinkage(d, tau, p, sigma, MC = TRUE)
 }
 \arguments{
 \item{d}{Numeric value of the empirical coefficient to be denoised.}

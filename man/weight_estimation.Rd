@@ -26,6 +26,6 @@ where \eqn{A(x)} is the aggregated function evaluated at each point \eqn{x},
 \eqn{\alpha_l(x)} are the functional coefficients, and \eqn{y_l} are the weights to be estimated.
 }
 \examples{
-weight_estimation(simulated_data$data[,1], simulated_data$alphas)
+weight_estimation(simulated_data_wav$data[,1], simulated_data_wav$alphas)
 
 }

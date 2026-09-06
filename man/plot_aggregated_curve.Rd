@@ -25,8 +25,8 @@ The aggregated curve is computed as:
 \deqn{A(x) = \displaystyle \sum_{l=1}^{L} y_l \alpha_l(x)}
 }
 \examples{
-plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3))
-plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3),
-                      "Aggregated Curve Example", simulated_data$x)
+plot_aggregated_curve(simulated_data_wav$alphas, c(0.7, 0.3))
+plot_aggregated_curve(simulated_data_wav$alphas, c(0.7, 0.3),
+                      "Aggregated Curve Example", simulated_data_wav$x)
 
 }
