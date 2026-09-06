@@ -36,8 +36,8 @@ Logistic_Density <- function(theta, tau) {
 #' @importFrom stats rnorm dnorm integrate
 #'
 #' @keywords internal
-Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
-  if (!MC) {
+Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = TRUE) {
+  if (MC) {
     N <- rnorm(500)
     return(
       ((1-p)*mean((sigma*N + d) * Logistic_Density(sigma*N + d, tau)))/
@@ -48,6 +48,24 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
       ((1-p)*integrate(function(u) (sigma*u + d) * Logistic_Density(sigma*u + d, tau) * dnorm(u), -Inf, Inf)$value)/
         (p/sigma*dnorm(d/sigma) + (1-p)*integrate(function(u) Logistic_Density(sigma*u + d, tau) * dnorm(u), -Inf, Inf)$value)
     )
+  }
+}
+#' @title Universal Shrinkage
+#'
+#' @description
+#' A short description...
+#'
+#' @param d Numeric value of the empirical coefficient to be denoised
+#' @param lambda Numeric value of \eqn{\lambda}
+#'
+#' @return A numeric value representing the result of the Universal shrinkage applied to the empirical coefficient \eqn{d}.
+#'
+#' @keywords internal
+Universal_Shrinkage <- function(d, lambda) {
+  if (abs(d) < lambda) {
+    return(0)
+  } else {
+    return(sign(d)*(abs(d) - lambda))
   }
 }
 #' @title Functional Data Calibration with Wavelets
@@ -73,6 +91,7 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
 #' @param MC A logical evaluating to \code{TRUE} or \code{FALSE} indicating if the integrals in the Bayesian shrinkage are approximated using Monte Carlo simulation.
 #' @param type A string indicating whether the thresholding should be "soft" or "hard" (applies only when the method is not "bayesian").
 #' @param singular A logical evaluating to \code{TRUE} or \code{FALSE} indicating if it adds a small constant (1e-10) to the diagonal of \eqn{yy^T} to stabilize the matrix inversion.
+#' @param corre A logical evaluating to \code{TRUE} or \code{FALSE} indicating if the errors of the data are correlated. Only available for "bayesian" and "universal" methods.
 #' @param x A numeric vector of values at which the function is evaluated. If \code{NULL}, the default is the sequence \code{1:nrow(data)}.
 #'
 #' @return
@@ -85,13 +104,15 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
 #'}
 #'
 #' @references dos Santos Sousa, A. R. (2024). A wavelet-based method in aggregated functional data analysis. Monte Carlo Methods and Applications, 30(1), 19-30.
+#' @references JOHNSTONE, I. M.; SILVERMAN, B. W. Wavelet Threshold Estimators for Data with Correlated Noise. Journal of the Royal Statistical Society: Series B (Statistical Methodology), v. 59, n. 2, p. 319–351, 1997.
 #'
 #' @examples
-#' \donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights)}
-#' \donttest{functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
-#'                                 tau = 5, p = 0.95, sigma = 0.1, x = simulated_data$x)}
-#' functional_calibration_wavelets(simulated_data$data, simulated_data$weights,
-#'                                 method = "universal")
+#' \donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights)}
+#' \donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights,
+#'                                 tau = 5, p = 0.95, sigma = 0.1, x = simulated_data_wav$x)}
+#' \donttest{functional_calibration_wavelets(simulated_data_wav$data, simulated_data_wav$weights,
+#'                                 method = "universal")}
+#' \donttest{functional_calibration_wavelets(simulated_data_cor$data, simulated_data_cor$weights, corre = TRUE)}
 #'
 #' @importFrom wavethresh wd threshold wr
 #' @importFrom stats median
@@ -100,9 +121,9 @@ Bayesian_Shrinkage <- function(d, tau, p, sigma, MC = FALSE) {
 #' @export
 functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhase",
                                             method = "bayesian", tau = 1,
-                                            p = NULL, sigma = NULL, MC = FALSE,
+                                            p = NULL, sigma = NULL, MC = TRUE,
                                             type = "soft", singular = FALSE,
-                                            x = NULL) {
+                                            corre = FALSE, x = NULL) {
 
   if (ncol(data) != ncol(weights)) {
     stop("Error: data dimension is not compatible with weights dimension.")
@@ -114,6 +135,10 @@ functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhas
 
   if (!(method %in% c("bayesian", "universal", "sure", "probability", "cv"))) {
     stop("Error: the methods of shrinkage avaiable are: bayesian, universal, sure, probability and cv.")
+  }
+
+  if(corre & !(method %in% c("bayesian", "universal"))) {
+    stop("Error: only the bayesian and universal shrinkages are avaiable for correlated errors.")
   }
 
   if (singular) {
@@ -140,12 +165,26 @@ functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhas
     }
 
     if (is.null(sigma)) {
-      sigma <- numeric(ncol(data))
-      for (i in 1:ncol(data)) {
-        sigma[i] <- median(abs(D[,i][1:(2^(log2(nrow(data)) - 1))]))/0.6745
+      if (corre) {
+        sigma <- matrix(NA, nrow = log2(nrow(data)):1, ncol = ncol(data))
+        ns <- 2^(log2(nrow(data)):1 - 1)
+        n_sum <- c(0, cumsum(ns))
+        for(i in 1:ncol(data)) {
+          for(j in 1:length(ns)) {
+            sigma[j, i] <- median(abs(D[,i][(n_sum[j]+1):n_sum[j+1]]))
+          }
+        }
+        lambda <- sqrt(2*log(nrow(data)))*sigma
+      } else {
+        sigma <- numeric(ncol(data))
+        for (i in 1:ncol(data)) {
+          sigma[i] <- median(abs(D[,i][1:(2^(log2(nrow(data)) - 1))]))/0.6745
+        }
+        sigma <- matrix(sigma, nrow = log2(nrow(data)):1, ncol = ncol(data),
+                        byrow = TRUE)
       }
     } else {
-      sigma <- rep(sigma, ncol(data))
+      sigma <- matrix(sigma, nrow = log2(nrow(data)):1, ncol = ncol(data))
     }
 
     if (is.null(p)) {
@@ -158,18 +197,42 @@ functional_calibration_wavelets <- function(data, weights, wavelet = "DaubExPhas
       k <- 1
       for (j in 1:log2(nrow(data))) {
         for (l in 1:2^(log2(nrow(data)) - j)) {
-          delta_D[k, i] <- Bayesian_Shrinkage(D[k, i], tau, p[j], sigma[i], MC)
+          delta_D[k, i] <- Bayesian_Shrinkage(D[k, i], tau, p[j], sigma[j, i], MC)
           k <- k + 1 }
       }
-      delta_D[k, i] <- Bayesian_Shrinkage(D[k, i], tau, p[length(p)], sigma[i], MC)
+      delta_D[k, i] <- Bayesian_Shrinkage(D[k, i], tau, p[length(p)], sigma[j, i], MC)
     }
 
   } else {
-    delta_D <- matrix(NA, nrow = nrow(data), ncol = ncol(data))
-    for (i in 1:ncol(data)) {
-      DWT <- wd(data[,i], family = wavelet)
-      DWT <- threshold(DWT, policy = method, type = type)
-      delta_D[,i] <- c(DWT$D, DWT$C[length(DWT$C)])
+    if (corre) {
+      sigma <- matrix(NA, nrow = log2(nrow(data)):1, ncol = ncol(data))
+      ns <- 2^(log2(nrow(data)):1 - 1)
+      n_sum <- c(0, cumsum(ns))
+      for(i in 1:ncol(data)) {
+        for(j in 1:length(ns)) {
+          sigma[j, i] <- median(abs(D[,i][(n_sum[j]+1):n_sum[j+1]]))
+        }
+      }
+      lambda <- sqrt(2*log(nrow(data)))*sigma
+
+      delta_D <- matrix(NA, nrow = nrow(data), ncol = ncol(data))
+      for (i in 1:ncol(data)) {
+        k <- 1
+        for (j in 1:log2(nrow(data))) {
+          for (l in 1:2^(log2(nrow(data)) - j)) {
+            delta_D[k, i] <- Universal_Shrinkage(D[k, i], lambda[j, i])
+            k <- k + 1 }
+        }
+        delta_D[k, i] <- Universal_Shrinkage(D[k, i], lambda[length(p), i])
+      }
+
+    } else {
+      delta_D <- matrix(NA, nrow = nrow(data), ncol = ncol(data))
+      for (i in 1:ncol(data)) {
+        DWT <- wd(data[,i], family = wavelet)
+        DWT <- threshold(DWT, policy = method, type = type)
+        delta_D[,i] <- c(DWT$D, DWT$C[length(DWT$C)])
+      }
     }
   }
   Gama <- delta_D%*%t(weights)%*%solve(weights%*%t(weights) + e*diag(nrow(weights)))

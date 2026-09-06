@@ -28,8 +28,10 @@
 #' @references Saraiva, M. A., & Dias, R. (2009). Analise não-parametrica de dados funcionais: uma aplicação a quimiometria (Doctoral dissertation, Master’s thesis, Universidade Estadual de Campinas, Campinas).
 #'
 #' @examples
-#' functional_calibration_splines(simulated_data$data, simulated_data$weights, simulated_data$x)
-#' functional_calibration_splines(simulated_data$data, simulated_data$weights, simulated_data$x, 12)
+#' functional_calibration_splines(simulated_data_spl$data,
+#' simulated_data_spl$weights, simulated_data_spl$x)
+#' functional_calibration_splines(simulated_data_spl$data,
+#' simulated_data_spl$weights, simulated_data_spl$x, 12)
 #'
 #' @importFrom splines bs
 #' @importFrom grDevices recordPlot

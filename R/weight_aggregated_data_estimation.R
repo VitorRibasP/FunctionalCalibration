@@ -17,20 +17,15 @@
 #' @return The function returns a vector with the estimated weights obtained using Ordinary Least Squares.
 #'
 #' @examples
-#' weight_estimation(simulated_data$data[,1], simulated_data$alphas)
+#' weight_estimation(simulated_data_wav$data[,1], simulated_data_wav$alphas)
 #'
 #' @importFrom stats coef lm
 #'
 #' @export
 weight_estimation <- function(data, alpha) {
-  if (inherits(alpha, "data.frame")) {
-    alphas <- as.matrix(alpha)
-  }
-  coefs <- coef(lm(data ~ . - 1, cbind(data, alpha)))
-  if (!(is.null(colnames(alpha)))) {
-    names(coefs) <- colnames(alpha)
-  }
-  return(
-    coefs
-  )
+  df <- as.data.frame(alpha)
+  df$data <- data
+  fit <- lm(data ~ . - 1, data = df)
+  coefs <- coef(fit)
+  return(coefs)
 }

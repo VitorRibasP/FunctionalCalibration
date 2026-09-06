@@ -16,9 +16,9 @@
 #' @return The function returns the plot of the aggregated function.
 #'
 #' @examples
-#' plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3))
-#' plot_aggregated_curve(simulated_data$alphas, c(0.7, 0.3),
-#'                       "Aggregated Curve Example", simulated_data$x)
+#' plot_aggregated_curve(simulated_data_wav$alphas, c(0.7, 0.3))
+#' plot_aggregated_curve(simulated_data_wav$alphas, c(0.7, 0.3),
+#'                       "Aggregated Curve Example", simulated_data_wav$x)
 #'
 #' @importFrom grDevices recordPlot
 #'
